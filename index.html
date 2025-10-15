@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Palette Studio — Create palettes from images</title>
+  <meta name="description" content="Extract colors from images, craft palettes, see WCAG contrast and save your favorites.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="styles/main.css">
+  <style type="text/tailwindcss" data-teda="tailwind-apply">
+    @layer components {
+      .btn-primary { @apply bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300; }
+      .btn-outline { @apply bg-white border border-gray-200 px-3 py-1.5 rounded-md text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100; }
+      .chip { @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 backdrop-blur text-sm font-medium; }
+      .lead-cta { @apply text-5xl font-extrabold leading-tight tracking-tight text-gray-900; }
+      .micro { @apply text-sm text-gray-500; }
+    }
+  </style>
+  <style>
+    /* Small inline adjustments for hero only - rest in styles/main.css */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-animate { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="antialiased bg-gradient-to-b from-white to-gray-50 text-gray-800">
+  <header class="max-w-7xl mx-auto px-6 pt-8 flex items-center justify-between" role="banner">
+    <a href="index.html" class="flex items-center gap-3" aria-label="Palette Studio home">
+      <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">PS</div>
+      <div class="hidden sm:block">
+        <div class="font-semibold">Palette Studio</div>
+        <div class="micro">Extract. Craft. Save.</div>
+      </div>
+    </a>
+    <nav class="flex items-center gap-3">
+      <a href="app.html" class="btn-primary" role="button">Open Studio</a>
+    </nav>
+  </header>
+
+  <main class="mt-12">
+    <section class="max-w-7xl mx-auto px-6 grid grid-cols-12 gap-6 items-start">
+      <!-- Asymmetric hero: large left panel (70%) with overlapping art, right slim column (30%) with CTA and features -->
+
+      <div class="col-span-12 lg:col-span-8 relative">
+        <div class="rounded-3xl bg-white shadow-lg p-8 lg:p-12 overflow-hidden relative">
+          <div class="absolute -right-12 -top-12 w-72 h-72 rounded-2xl transform rotate-6 bg-indigo-50 hero-animate" style="box-shadow: 0 30px 60px rgba(99,102,241,0.07);"></div>
+          <h1 class="lead-cta">Turn images into perfect palettes — fast.</h1>
+          <p class="mt-4 text-gray-600 max-w-prose">Upload a photo or drop an image to extract harmonious colors, test contrast for accessibility, and save shareable palettes. Built for designers, developers, and creators who care about color.</p>
+
+          <div class="mt-6 flex flex-wrap gap-3 items-center">
+            <a href="app.html" class="btn-primary" aria-describedby="cta-desc">Launch Studio</a>
+            <a href="app.html" class="btn-outline">Try demo image</a>
+            <div id="cta-desc" class="sr-only">Open the interactive palette studio</div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-5 gap-3">
+            <!-- Floating swatch preview to hint at functionality -->
+            <div class="h-14 rounded-lg" style="background:#0ea5a5;"></div>
+            <div class="h-14 rounded-lg" style="background:#7c3aed;"></div>
+            <div class="h-14 rounded-lg" style="background:#06b6d4;"></div>
+            <div class="h-14 rounded-lg" style="background:#f97316;"></div>
+            <div class="h-14 rounded-lg" style="background:#ef4444;"></div>
+          </div>
+
+          <div class="mt-10 flex items-center gap-4">
+            <div class="chip">Fast extraction</div>
+            <div class="chip">WCAG contrast</div>
+            <div class="chip">Local saves</div>
+          </div>
+        </div>
+
+        <div class="mt-6 text-sm text-gray-500">Designed with thoughtful spacing and modern UI patterns. Try dragging an image into the studio to see the magic.</div>
+      </div>
+
+      <aside class="col-span-12 lg:col-span-4">
+        <div class="rounded-2xl p-6 bg-white shadow-md sticky top-20">
+          <h3 class="font-semibold text-lg">Why Palette Studio</h3>
+          <ul class="mt-4 space-y-3 text-gray-600">
+            <li><strong class="text-gray-800">Extract</strong> the dominant tones from any image using a smart sampler.</li>
+            <li><strong class="text-gray-800">Refine</strong> swatches, lock favorites and build palettes interactively.</li>
+            <li><strong class="text-gray-800">Validate</strong> contrast ratios and make accessible color choices.</li>
+          </ul>
+
+          <div class="mt-6">
+            <a href="app.html" class="btn-primary w-full block text-center">Open Studio — it is free</a>
+          </div>
+        </div>
+
+        <div class="mt-6 text-sm text-gray-500">Pro tip: Keyboard friendly, local saves, and mobile-ready interactions.</div>
+      </aside>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 mt-12">
+      <div class="rounded-xl p-6 bg-white shadow-sm flex items-center gap-4">
+        <div class="w-14 h-14 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold">i</div>
+        <div>
+          <div class="font-medium">Built for vibrant work</div>
+          <div class="micro">Export palettes, copy hexes, and verify contrast for accessibility. Try it now.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-7xl mx-auto px-6 py-12 text-sm text-gray-500">
+    <div class="flex flex-col sm:flex-row items-center justify-between">
+      <div>© <span id="year"></span> Palette Studio</div>
+      <div class="mt-3 sm:mt-0">Made with care by <a href="https://teda.dev" class="text-indigo-600 hover:underline">Teda.dev</a></div>
+    </div>
+  </footer>
+
+  <script>
+    $(function(){ $('#year').text(new Date().getFullYear()); });
+    // smooth hover microinteraction for CTA
+    $(function(){
+      $('.btn-primary').on('mouseenter focus', function(){ $(this).addClass('shadow-lg'); });
+      $('.btn-primary').on('mouseleave blur', function(){ $(this).removeClass('shadow-lg'); });
+    });
+  </script>
+  <script src="scripts/helpers.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

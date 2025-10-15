@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Palette Studio - Studio</title>
+  <meta name="description" content="Interactive color palette studio - extract colors, save palettes, and test contrast.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="styles/main.css">
+  <style type="text/tailwindcss" data-teda="tailwind-apply">
+    @layer components {
+      .btn-primary { @apply bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300; }
+      .btn-ghost { @apply bg-white border border-gray-200 px-3 py-1.5 rounded-md text-sm text-gray-700 hover:bg-gray-50; }
+      .swatch { @apply rounded-md shadow-sm border border-gray-100 cursor-pointer; }
+      .palette-card { @apply bg-white rounded-lg p-4 shadow-sm border border-gray-50; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-3" aria-label="Back to landing">
+          <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">PS</div>
+          <div class="hidden sm:block">
+            <div class="font-semibold">Palette Studio</div>
+            <div class="text-xs text-gray-500">Studio</div>
+          </div>
+        </a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="btn-export" class="btn-ghost" title="Export all palettes">Export</button>
+        <button id="btn-clear" class="btn-ghost" title="Clear saved palettes">Clear</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-6">
+    <!-- Left: Tools and image area (8/12 - 66%) asymmetric layout -->
+    <section class="col-span-12 lg:col-span-8">
+      <div class="rounded-2xl bg-white p-6 shadow-md">
+        <h2 class="text-2xl font-bold">Extract colors from an image</h2>
+        <p class="mt-1 text-sm text-gray-500">Upload or drag-and-drop an image, then tune extraction count. Click swatches to add to your palette.</p>
+
+        <div id="drop-area" class="mt-6 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 p-6 text-center" tabindex="0" role="region" aria-label="Upload image area">
+          <input id="file-input" type="file" accept="image/*" class="hidden">
+          <div class="mx-auto max-w-md">
+            <p class="text-sm text-gray-600">Drop an image here or <button id="select-file" class="text-indigo-600 hover:underline">choose a file</button></p>
+            <div class="mt-4 flex items-center justify-center gap-3">
+              <button id="btn-sample" class="btn-ghost">Use demo image</button>
+              <div class="flex items-center gap-2">
+                <label for="count" class="text-sm text-gray-600">Colors</label>
+                <input id="count" type="range" min="2" max="12" value="6" class="w-40" aria-label="Number of colors to extract">
+                <span id="count-val" class="text-sm font-medium">6</span>
+              </div>
+            </div>
+          </div>
+          <div id="preview-wrap" class="mt-6 hidden">
+            <canvas id="preview-canvas" class="mx-auto rounded-md" style="max-width:100%; height:auto;" aria-hidden="true"></canvas>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-semibold">Extracted colors</h3>
+          <div id="swatches" class="mt-3 grid grid-cols-3 sm:grid-cols-6 gap-3" aria-live="polite"></div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-semibold">Active Palette</h3>
+          <div id="active-palette" class="mt-3 flex flex-wrap gap-3 items-center"></div>
+          <div class="mt-3 flex gap-2">
+            <input id="palette-name" type="text" placeholder="Palette name" class="px-3 py-2 border rounded-md w-full" aria-label="Palette name">
+            <button id="save-palette" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-2xl bg-white p-6 shadow-md">
+        <h3 class="font-semibold">Contrast tester</h3>
+        <p class="text-sm text-gray-600 mt-1">Drag two colors below and check WCAG contrast and pass/fail badges.</p>
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 palette-card" id="contrast-left" aria-label="Contrast left color">
+            <div class="text-sm text-gray-500">Foreground</div>
+            <div class="mt-3 h-20 rounded-md swatch" id="contrast-fore" style="background:#111111"></div>
+            <div class="mt-2 text-xs text-gray-600" id="fore-hex">#111111</div>
+          </div>
+          <div class="p-4 palette-card" id="contrast-right" aria-label="Contrast right color">
+            <div class="text-sm text-gray-500">Background</div>
+            <div class="mt-3 h-20 rounded-md swatch" id="contrast-back" style="background:#ffffff"></div>
+            <div class="mt-2 text-xs text-gray-600" id="back-hex">#ffffff</div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <div class="rounded-md p-3 bg-gray-100">
+            <div class="text-sm text-gray-500">Contrast</div>
+            <div id="contrast-val" class="font-mono font-semibold">21:1</div>
+          </div>
+          <div id="contrast-badges" class="flex gap-2 items-center"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Saved palettes and gallery (4/12 - 33%) -->
+    <aside class="col-span-12 lg:col-span-4">
+      <div class="rounded-2xl bg-white p-4 shadow-md">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold">Saved Palettes</h3>
+          <button id="btn-new" class="btn-ghost" title="New empty palette">New</button>
+        </div>
+        <div id="palettes-list" class="mt-4 space-y-3 max-h-[52vh] overflow-auto" aria-live="polite"></div>
+      </div>
+
+      <div class="mt-6 rounded-2xl bg-white p-4 shadow-sm">
+        <h4 class="font-semibold">Help</h4>
+        <p class="text-sm text-gray-600 mt-2">Tip: Click a swatch to add to the active palette. Drag saved palette colors to the contrast tester. Palettes persist in your browser.</p>
+      </div>
+    </aside>
+  </main>
+
+  <template id="tpl-palette-card">
+    <div class="palette-card" data-id="">
+      <div class="flex items-center justify-between">
+        <div class="font-medium name">Palette</div>
+        <div class="flex items-center gap-2">
+          <button class="btn-ghost btn-export-local" title="Export palette">Export</button>
+          <button class="btn-ghost btn-delete" title="Delete">Delete</button>
+        </div>
+      </div>
+      <div class="mt-3 flex gap-2 colors"></div>
+    </div>
+  </template>
+
+  <script src="scripts/helpers.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>
